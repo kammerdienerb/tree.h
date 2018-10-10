@@ -1,6 +1,6 @@
 # tree.h
 
-_tree.h_ is a header-only generic red/black implementation in C. It utilizes (abuses?) the C preprocessor to be provide a level of generality near C++ templates like the STL’s std::map.
+_tree.h_ is a header-only generic red/black tree implementation in C. It utilizes (abuses?) the C preprocessor to be provide a level of generality near C++ templates like the STL’s std::map.
 
 ## Using ##
 To use _tree.h_, you must first `#include "tree.h"` in your source code. For every type that you wish to hold in a tree, EXACTLY ONE 'using' statement is required:
