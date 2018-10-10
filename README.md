@@ -65,6 +65,8 @@ After that, you may use any of the following macro-like functions to create, des
 
 By default, _tree.h_ will use the _<_ operator to compare keys. `make_tree_c` takes an additional last argument which is a function pointer that will compare keys.
 
+See _tree_test.c_ for examples of using _tree.h_'s interface.
+
 
 ### Note ###
 _tree.h_ requires the C preprocessor's \_\_VA\_ARGS\_\_ and so requires that it is compiled in C99 mode.
