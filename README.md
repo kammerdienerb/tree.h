@@ -9,11 +9,11 @@ To use _tree.h_, you must first `#include "tree.h"` in your source code. For eve
 /* main.c */
 #include "tree.h"
 
-use_tree(int);
+use_tree(float, int);
 
 ...
 ```
-If the type to be contained is referenced with anything but a bare identifier (e.g. `char *`, `float[10]`), it must first be wrapped in a typedef:
+If the either the key type or the value type is referenced with anything but a bare identifier (e.g. `char *`, `float[10]`), it must first be wrapped in a typedef:
 
 ```C
 /* main.c */
@@ -21,7 +21,7 @@ If the type to be contained is referenced with anything but a bare identifier (e
 
 typedef char * str;
 
-use_tree(str);
+use_tree(str, double);
 
 ...
 ```
