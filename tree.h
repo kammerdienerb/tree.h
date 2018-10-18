@@ -31,12 +31,14 @@
 #define tree_it_val(it)  ((it)._node->_val)
 #define tree_it_next(it) ((it)._next(&(it)))
 #define tree_it_good(it) ((it)._node != NULL)
-#define tree_it_prev(it) do {    \
-    if (tree_it_good(it)) {      \
-        (it)._prev(&(it));       \
-    } else {                     \
-        it = tree_last((it)._t); \
-    }                            \
+#define tree_it_prev(it) do {                      \
+    if ((it)._node == tree_begin((it._t))._node) { \
+        (it)._node = NULL;                         \
+    } else if (tree_it_good(it)) {                 \
+        (it)._prev(&(it));                         \
+    } else {                                       \
+        (it) = tree_last((it)._t);                 \
+    }                                              \
 } while (0)
 #define tree_traverse(t, it) for ((it) = tree_begin(t); tree_it_good((it)); tree_it_next((it)))
 
