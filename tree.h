@@ -229,7 +229,12 @@ void CAT2(tree_it(K_T, V_T), _prev)(struct _tree_it(K_T, V_T) * it) {           
         while (node->_children[1])                                                               \
             node = node->_children[1];                                                           \
     } else {                                                                                     \
-        node = node->_parent;                                                                    \
+        tree_node(K_T, V_T) p = node->_parent;                                                   \
+        while (node == p->_children[0]) {                                                        \
+            node = p;                                                                            \
+            p = p->_parent;                                                                      \
+        }                                                                                        \
+        node = p;                                                                                \
     }                                                                                            \
                                                                                                  \
     it->_node = node;                                                                            \
@@ -507,8 +512,8 @@ tree(K_T, V_T) CAT2(tree(K_T, V_T), _make)(void * cmp) {                        
                 sizeof(struct _tree(K_T, V_T)));                                                 \
                                                                                                  \
     struct _tree(K_T, V_T) init = {                                                              \
-        ._len    = 0,                                                                            \
         ._root   = NULL,                                                                         \
+        ._len    = 0,                                                                            \
         ._free   = CAT2(tree(K_T, V_T), _free),                                                  \
         ._lookup = CAT2(tree(K_T, V_T), _lookup),                                                \
         ._insert = CAT2(tree(K_T, V_T), _insert),                                                \
