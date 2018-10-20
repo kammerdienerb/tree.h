@@ -40,6 +40,7 @@
         (it) = tree_last((it)._t);                 \
     }                                              \
 } while (0)
+#define tree_it_equ(it1, it2) ((it1)._node == (it2)._node && (it1)._t == (it2)._t)
 #define tree_traverse(t, it) for ((it) = tree_begin(t); tree_it_good((it)); tree_it_next((it)))
 
 #define STR(x) _STR(x)
@@ -129,7 +130,8 @@ typedef int(*CAT2(tree(K_T, V_T), _cmp_t))                                      
                                                                                                  \
 typedef struct _tree(K_T, V_T) {                                                                 \
     tree_node(K_T, V_T)                                                                          \
-        _root;                                                                                   \
+        _root,                                                                                   \
+        _beg;                                                                                    \
     uint64_t                                                                                     \
         _len;                                                                                    \
                                                                                                  \
@@ -244,9 +246,10 @@ void CAT2(tree_it(K_T, V_T), _prev)(struct _tree_it(K_T, V_T) * it) {           
 tree_it(K_T, V_T) CAT2(tree(K_T, V_T), _insert)(tree(K_T, V_T) t, K_T key, V_T val) {            \
     tree_node(K_T, V_T) node;                                                                    \
     int made_new = 0;                                                                            \
+    int only_lefts = 1;                                                                          \
                                                                                                  \
     if (!t->_root) {                                                                             \
-        node = t->_root = CAT2(tree_node(K_T, V_T), _make)(key, val);                            \
+        node = t->_beg = t->_root = CAT2(tree_node(K_T, V_T), _make)(key, val);                  \
         made_new = 1;                                                                            \
     } else {                                                                                     \
         struct _tree_node(K_T, V_T) head = { 0 }; /* False tree root */                          \
@@ -297,6 +300,7 @@ tree_it(K_T, V_T) CAT2(tree(K_T, V_T), _insert)(tree(K_T, V_T) t, K_T key, V_T v
                                                                                                  \
             last = dir;                                                                          \
             dir = _TREE_LSS(t, q->_key, key);                                                    \
+            only_lefts &= !dir;                                                                  \
                                                                                                  \
             /* Move the helpers down */                                                          \
             if (g != NULL) {                                                                     \
@@ -316,6 +320,9 @@ tree_it(K_T, V_T) CAT2(tree(K_T, V_T), _insert)(tree(K_T, V_T) t, K_T key, V_T v
     t->_root->_red = 0;                                                                          \
     if (made_new) {                                                                              \
         t->_len += 1;                                                                            \
+    }                                                                                            \
+    if (only_lefts) {                                                                            \
+        t->_beg = node;                                                                          \
     }                                                                                            \
                                                                                                  \
     return _TI_FROM_TN(K_T, V_T, t, node);                                                       \
@@ -445,15 +452,7 @@ tree_it(K_T, V_T) CAT2(tree(K_T, V_T), _lookup)(tree(K_T, V_T) t, K_T key) {    
 }                                                                                                \
                                                                                                  \
 tree_it(K_T, V_T) CAT2(tree(K_T, V_T), _begin)(tree(K_T, V_T) t) {                               \
-    tree_node(K_T, V_T) node = t->_root;                                                         \
-                                                                                                 \
-    while (node) {                                                                               \
-        if (!node->_children[0])                                                                 \
-            break;                                                                               \
-        node = node->_children[0];                                                               \
-    }                                                                                            \
-                                                                                                 \
-    return _TI_FROM_TN(K_T, V_T, t, node);                                                       \
+    return _TI_FROM_TN(K_T, V_T, t, t->_beg);                                                    \
 }                                                                                                \
                                                                                                  \
 tree_it(K_T, V_T) CAT2(tree(K_T, V_T), _last)(tree(K_T, V_T) t) {                                \
@@ -513,6 +512,7 @@ tree(K_T, V_T) CAT2(tree(K_T, V_T), _make)(void * cmp) {                        
                                                                                                  \
     struct _tree(K_T, V_T) init = {                                                              \
         ._root   = NULL,                                                                         \
+        ._beg    = NULL,                                                                         \
         ._len    = 0,                                                                            \
         ._free   = CAT2(tree(K_T, V_T), _free),                                                  \
         ._lookup = CAT2(tree(K_T, V_T), _lookup),                                                \
