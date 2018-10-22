@@ -9,7 +9,7 @@
 
 use_tree(int, float);
 
-#define N 100000000
+int N = 1000000;
 
 template <typename T>
 void equ(T a, T b, const char * message) {
@@ -20,13 +20,23 @@ void equ(T a, T b, const char * message) {
     }
 }
 
-int main() {
-    std::map<int, float> m;
-    tree(int, float)     t;
-    tree_it(int, float)  it;
-    int                  i,
-                         r,
-                         len;
+int main(int argc, char ** argv) {
+    std::map<int, float>           m;
+    std::map<int, float>::iterator mit;
+    tree(int, float)               t;
+    tree_it(int, float)            it;
+    int                            i,
+                                   r,
+                                   len;
+
+    if (argc > 2) {
+        printf("usage: %s [N]\n", argv[0]);
+        return 1;
+    }
+
+    if (argc == 2) {
+        sscanf(argv[1], "%d", &N);
+    }
 
     t = tree_make(int, float);
 
@@ -41,16 +51,71 @@ int main() {
 
     printf("\n");
 
-    printf("Testing final length...");
+    printf("Testing length...");
     equ(m.size(), (size_t)tree_len(t), "elem size mismatch");
     len = m.size();
     printf("%d\n", len);
 
-    it       = tree_begin(t);
-    auto mit = m.begin();
-    i        = 0;
+    for (i = 0; i < N / 10;) {
+        printf("Testing deletion from beginning...%d of %d                     \r", ++i, N / 10);
+        
+        mit = m.begin();
+        it  = tree_begin(t); 
 
-    /* print_tree(t->_root, 0); */
+        m.erase(mit);
+
+        equ(1, tree_delete(t, tree_it_key(it)), "tree_delete() returned incorrect value");
+        equ(m.size(), (size_t)tree_len(t), "size mismatch");
+    }
+
+    printf("\n");
+
+    for (i = 0; i < N / 10;) {
+        printf("Testing deletion from end...%d of %d                     \r", ++i, N / 10);
+        
+        mit = --m.end();
+        it  = tree_last(t);
+
+        m.erase(mit);
+
+        equ(1, tree_delete(t, tree_it_key(it)), "tree_delete() returned incorrect value");
+        equ(m.size(), (size_t)tree_len(t), "size mismatch");
+    }
+
+    printf("\n");
+ 
+    for (i = 0; i < N / 10;) {
+        printf("Testing lookup and random deletion...%d of %d                     \r", i + 1, N / 10);
+       
+        r = rand() % (10 * N);
+
+        mit = m.find(r);
+        it  = tree_lookup(t, r);
+
+        if (mit == m.end()) {
+            if (tree_it_good(it)) {
+                printf("\nExpected bad iterator. Got %p (%d, %f)\n", it._node, tree_it_key(it), tree_it_val(it));
+                exit(1);
+            }
+        } else {
+            equ(mit->first, tree_it_key(it), "key mismatch");
+            equ(mit->second, tree_it_val(it), "val mismatch");
+
+            m.erase(mit);        
+
+            equ(1, tree_delete(t, tree_it_key(it)), "tree_delete() returned incorrect value");
+            equ(m.size(), (size_t)tree_len(t), "size mismatch");
+
+            i += 1;
+        }
+    }
+
+    printf("\n");
+    
+    len = m.size();
+    it  = tree_begin(t);
+    mit = m.begin();
+    i   = 0;
 
     for (;;) {
         if (mit == m.end())
@@ -81,7 +146,6 @@ int main() {
     }
     
     printf("\n");
-
 
     for (i = 0; i < N;) {
         printf("Testing lower bound...%d of %d                     \r", i + 1, N);

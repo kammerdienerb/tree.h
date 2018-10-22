@@ -320,9 +320,9 @@ tree_it(K_T, V_T) CAT2(tree(K_T, V_T), _insert)(tree(K_T, V_T) t, K_T key, V_T v
     t->_root->_red = 0;                                                                          \
     if (made_new) {                                                                              \
         t->_len += 1;                                                                            \
-    }                                                                                            \
-    if (only_lefts) {                                                                            \
-        t->_beg = node;                                                                          \
+        if (only_lefts) {                                                                        \
+            t->_beg = node;                                                                      \
+        }                                                                                        \
     }                                                                                            \
                                                                                                  \
     return _TI_FROM_TN(K_T, V_T, t, node);                                                       \
@@ -334,7 +334,7 @@ int CAT2(tree(K_T, V_T), _delete)(tree(K_T, V_T) t, K_T key) {                  
                                                                                                  \
     if (t->_len == 1 && _TREE_EQU(t, t->_root->_key, key)) {                                     \
         CAT2(tree_node(K_T, V_T), _free(t->_root));                                              \
-        t->_root = NULL;                                                                         \
+        t->_root = t->_beg = NULL;                                                               \
         t->_len = 0;                                                                             \
         return 1;                                                                                \
     }                                                                                            \
@@ -414,8 +414,11 @@ int CAT2(tree(K_T, V_T), _delete)(tree(K_T, V_T) t, K_T key) {                  
         if (p->_children[p->_children[1] == q])                                                  \
             p->_children[p->_children[1] == q]->_parent = p;                                     \
                                                                                                  \
-        f->_parent = NULL;                                                                       \
-        CAT2(tree_node(K_T, V_T), _free)(f);                                                     \
+        if (f == t->_beg) {                                                                      \
+            t->_beg = f->_parent;                                                                \
+        }                                                                                        \
+                                                                                                 \
+        CAT2(tree_node(K_T, V_T), _free)(q);                                                     \
                                                                                                  \
         q = NULL;                                                                                \
     }                                                                                            \
