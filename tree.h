@@ -414,8 +414,8 @@ int CAT2(tree(K_T, V_T), _delete)(tree(K_T, V_T) t, K_T key) {                  
         if (p->_children[p->_children[1] == q])                                                  \
             p->_children[p->_children[1] == q]->_parent = p;                                     \
                                                                                                  \
-        if (f == t->_beg) {                                                                      \
-            t->_beg = f->_parent;                                                                \
+        if (q == t->_beg) {                                                                      \
+            t->_beg = p;                                                                         \
         }                                                                                        \
                                                                                                  \
         CAT2(tree_node(K_T, V_T), _free)(q);                                                     \
