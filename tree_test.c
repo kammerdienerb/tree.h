@@ -5,9 +5,9 @@
 
 #include "tree.h"
 
-use_tree(int, float);
+impl_tree(int, float);
 typedef char * str;
-use_tree(str, str);
+impl_tree(str, str);
 
 void print_tree_items(tree(int, float) t) {
     int i = 0;

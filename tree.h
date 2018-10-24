@@ -78,7 +78,24 @@
     ._prev = CAT2(tree_it(K_T, V_T), _prev)                \
 })
 
-#define use_tree(K_T, V_T)                                                                       \
+#define use_tree(K_T, V_T)                                                      \
+struct _tree(K_T, V_T);                                                         \
+typedef struct _tree(K_T, V_T) * tree(K_T, V_T);                                \
+typedef struct _tree_node(K_T, V_T) * tree_node(K_T, V_T);                      \
+typedef void(*CAT2(tree_it(K_T, V_T), _next_t))(struct _tree_it(K_T, V_T)* it); \
+typedef void(*CAT2(tree_it(K_T, V_T), _prev_t))(struct _tree_it(K_T, V_T)* it); \
+typedef struct _tree_it(K_T, V_T) {                                             \
+    struct _tree(K_T, V_T)                                                      \
+        * _t;                                                                   \
+    tree_node(K_T, V_T)                                                         \
+        _node;                                                                  \
+    CAT2(tree_it(K_T, V_T), _next_t)                                            \
+        _next;                                                                  \
+    CAT2(tree_it(K_T, V_T), _prev_t)                                            \
+        _prev;                                                                  \
+} tree_it(K_T, V_T);                                                            \
+ 
+#define impl_tree(K_T, V_T)                                                                      \
 typedef struct _tree_node(K_T, V_T) {                                                            \
     int                                                                                          \
         _red;                                                                                    \
