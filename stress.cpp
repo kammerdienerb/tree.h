@@ -7,7 +7,7 @@
 
 #include "tree.h"
 
-impl_tree(int, float);
+use_tree(int, float);
 
 int N = 1000000;
 
