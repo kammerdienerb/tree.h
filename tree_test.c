@@ -5,9 +5,9 @@
 
 #include "tree.h"
 
-impl_tree(int, float);
-typedef char * str;
-impl_tree(str, str);
+use_tree(int, float);
+typedef char *str;
+use_tree(str, str);
 
 void print_tree_items(tree(int, float) t) {
     int i = 0;
@@ -81,7 +81,7 @@ int main() {
     tree_insert(s_t, strdup("scarf"),    strdup("magic"));
     tree_insert(s_t, strdup("feeling"),  strdup("general"));
     tree_insert(s_t, strdup("fearless"), strdup("tremendous"));
-    tree_insert(s_t, strdup("dapper"),   strdup("spicy"));
+    /* tree_insert(s_t, strdup("dapper"),   strdup("spicy")); */
     tree_insert(s_t, strdup("helpful"),  strdup("fool"));
     tree_insert(s_t, strdup("laugh"),    strdup("tan"));
     tree_insert(s_t, strdup("toe"),      strdup("tacky"));
@@ -89,6 +89,7 @@ int main() {
     tree_insert(s_t, strdup("oval"),     strdup("income"));
     tree_insert(s_t, strdup("jitter"),   strdup("weigh"));
     tree_insert(s_t, strdup("yam"),      strdup("small"));
+    tree_insert(s_t, strdup("aloof"),    strdup("popsicle"));
 
     if (tree_delete(s_t, "doesn't exist"))
         printf("how did we delete a key that doesn't exist?\n");
