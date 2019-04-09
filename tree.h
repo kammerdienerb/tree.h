@@ -323,8 +323,9 @@
                                                                                \
             /* Update the root (it may be different) */                        \
             t->_root = head._children[1];                                      \
-            if (t->_root)                                                      \
+            if (t->_root) {                                                    \
                 t->_root->_parent = NULL;                                      \
+            }                                                                  \
         }                                                                      \
                                                                                \
         t->_root->_red = 0;                                                    \
@@ -384,7 +385,8 @@
                     if (p->_children[last])                                    \
                         p->_children[last]->_parent = p;                       \
                     p = p->_children[last];                                    \
-                } else if (!_TN_IS_RED(q->_children[!dir])) {                  \
+                /* } else if (!_TN_IS_RED(q->_children[!dir])) {            */ \
+                } else {                                                       \
                     tree_node(K_T, V_T) s = p->_children[!last];               \
                     if (s) {                                                   \
                         if (!_TN_IS_RED(s->_children[!last]) &&                \
@@ -459,7 +461,6 @@
     static inline tree_it(K_T, V_T)                                            \
         CAT2(tree(K_T, V_T), _lookup)(tree(K_T, V_T) t, K_T key) {             \
         tree_node(K_T, V_T) node = t->_root;                                   \
-        int cmp = 0;                                                           \
         while (node) {                                                         \
             if (_TREE_EQU(t, node->_key, key)) {                               \
                 break;                                                         \
