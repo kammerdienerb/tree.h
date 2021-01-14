@@ -58,9 +58,9 @@ int main(int argc, char ** argv) {
 
     for (i = 0; i < N / 10;) {
         printf("Testing deletion from beginning...%d of %d                     \r", ++i, N / 10);
-        
+
         mit = m.begin();
-        it  = tree_begin(t); 
+        it  = tree_begin(t);
 
         m.erase(mit);
 
@@ -72,7 +72,7 @@ int main(int argc, char ** argv) {
 
     for (i = 0; i < N / 10;) {
         printf("Testing deletion from end...%d of %d                     \r", ++i, N / 10);
-        
+
         mit = --m.end();
         it  = tree_last(t);
 
@@ -83,10 +83,10 @@ int main(int argc, char ** argv) {
     }
 
     printf("\n");
- 
+
     for (i = 0; i < N / 10;) {
         printf("Testing lookup and random deletion...%d of %d                     \r", i + 1, N / 10);
-       
+
         r = rand() % (10 * N);
 
         mit = m.find(r);
@@ -101,7 +101,7 @@ int main(int argc, char ** argv) {
             equ(mit->first, tree_it_key(it), "key mismatch");
             equ(mit->second, tree_it_val(it), "val mismatch");
 
-            m.erase(mit);        
+            m.erase(mit);
 
             equ(1, tree_delete(t, tree_it_key(it)), "tree_delete() returned incorrect value");
             equ(m.size(), (size_t)tree_len(t), "size mismatch");
@@ -111,7 +111,7 @@ int main(int argc, char ** argv) {
     }
 
     printf("\n");
-    
+
     len = m.size();
     it  = tree_begin(t);
     mit = m.begin();
@@ -126,7 +126,7 @@ int main(int argc, char ** argv) {
         tree_it_next(it);
         mit++;
     }
-    
+
     printf("\n");
 
     it  = tree_last(t);
@@ -144,15 +144,15 @@ int main(int argc, char ** argv) {
         tree_it_prev(it);
         mit--;
     }
-    
+
     printf("\n");
 
     for (i = 0; i < N;) {
         printf("Testing lower bound...%d of %d                     \r", i + 1, N);
-        r = rand() % (10 * N);        
+        r = rand() % (10 * N);
         mit = m.lower_bound(r);
         it  = tree_geq(t, r);
-        
+
         if (mit != m.end()) {
             equ(mit->first, tree_it_key(it), "key mismatch");
             equ(mit->second, tree_it_val(it), "val mismatch");
@@ -170,7 +170,7 @@ int main(int argc, char ** argv) {
 
     for (i = 0; i < N;) {
         printf("Testing upper bound...%d of %d                     \r", i + 1, N);
-        r = rand() % (10 * N);        
+        r = rand() % (10 * N);
         mit = m.upper_bound(r);
         it  = tree_gtr(t, r);
 
@@ -185,7 +185,7 @@ int main(int argc, char ** argv) {
             }
         }
     }
-    
+
     printf("\n");
 
     printf("Testing cleanup...\n");

@@ -7,7 +7,7 @@
 
 use_tree(int, float);
 typedef char *str;
-use_tree(str, str);
+use_tree_c(str, str, strcmp);
 
 void print_tree_items(tree(int, float) t) {
     int i = 0;
@@ -35,7 +35,7 @@ void print_tree(tree_node(int, float) node, int level) {
 
 int main() {
     tree(int, float) t = tree_make(int, float);
-    tree(str, str) s_t = tree_make_c(str, str, strcmp);
+    tree(str, str) s_t = tree_make(str, str);
 
     for (int i = 0; i < 10; i += 1) {
         tree_insert(t, i * i, (float)i);
@@ -81,7 +81,7 @@ int main() {
     tree_insert(s_t, strdup("scarf"),    strdup("magic"));
     tree_insert(s_t, strdup("feeling"),  strdup("general"));
     tree_insert(s_t, strdup("fearless"), strdup("tremendous"));
-    /* tree_insert(s_t, strdup("dapper"),   strdup("spicy")); */
+    tree_insert(s_t, strdup("dapper"),   strdup("spicy"));
     tree_insert(s_t, strdup("helpful"),  strdup("fool"));
     tree_insert(s_t, strdup("laugh"),    strdup("tan"));
     tree_insert(s_t, strdup("toe"),      strdup("tacky"));
@@ -124,5 +124,5 @@ int main() {
     tree_free(s_t);
     tree_free(t);
 
-    return 0; 
+    return 0;
 }

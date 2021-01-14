@@ -18,10 +18,11 @@ If the either the key type or the value type is referenced with anything but a b
 ```C
 /* main.c */
 #include "tree.h"
+#include <string.h>
 
 typedef char * str;
 
-use_tree(str, double);
+use_tree_c(str, double, strcmp);
 
 ...
 ```
@@ -29,8 +30,6 @@ use_tree(str, double);
 After that, you may use any of the following macro-like functions to create, destroy, and operate on trees and their iterators.
 
 `tree_make(key_type, value_type)`        - Allocates, initializes, and returns a new tree.
-
-`tree_make_c(key_type, value_type, cmp)` - Allocates, initializes, and returns a new tree with the comparator function `cmp`.
 
 `tree_free(t)`                           - `free()`s the tree. This does NOT deallocate tree keys or values.
 
@@ -63,7 +62,17 @@ After that, you may use any of the following macro-like functions to create, des
 `tree_traverse(t, it)`                   - Shorthand for a `for` loop that visits every tree element (ordered by key).
 
 
-By default, _tree.h_ will use the _<_ operator to compare keys. `make_tree_c` takes an additional last argument which is a function pointer that will compare keys.
+When `use_tree` is used, _tree.h_ will use the `<` operator to compare keys.
+When `use_tree_c` is used, _tree.h_ will run the comparator function that is provided as the third argument.
+For example:
+```
+use_tree_c(str_t, float, strcmp);
+```
+When `use_tree_ptr_c` is used, _tree.h_ will run the comparator function that is provided as the third argument, but will pass the keys by address.
+For example:
+```
+use_tree_ptr_c(struct_key_type, int, memcmp);
+```
 
 See _tree_test.c_ for examples of using _tree.h_'s interface.
 
@@ -75,4 +84,3 @@ _tree.h_ requires the C preprocessor's \_\_VA\_ARGS\_\_ and so requires that it 
 You can clone the project with [Git](http://git-scm.com "Git") by running:
 
     $ git clone git://github.com/kammerdienerb/tree.h
-
