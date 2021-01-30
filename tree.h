@@ -12,14 +12,13 @@
 #define _TREE_H_
 
 #include <stdint.h>
+#include <stdlib.h>
 
 #ifndef TREE_MALLOC_FN
-#include <stdlib.h>
 #define TREE_MALLOC_FN malloc
 #endif
 
 #ifndef TREE_FREE_FN
-#include <stdlib.h>
 #define TREE_FREE_FN free
 #endif
 
