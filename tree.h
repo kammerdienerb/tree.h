@@ -12,8 +12,16 @@
 #define _TREE_H_
 
 #include <stdint.h>
-#include <stdlib.h> /* malloc, free */
-#include <string.h> /* memcpy, memcmp */
+
+#ifndef TREE_MALLOC_FN
+#include <stdlib.h>
+#define TREE_MALLOC_FN malloc
+#endif
+
+#ifndef TREE_FREE_FN
+#include <stdlib.h>
+#define TREE_FREE_FN free
+#endif
 
 #define tree_make(K_T, V_T) (CAT2(tree(K_T, V_T), _make)())
 #define tree_len(t) (t->_len)
@@ -121,14 +129,14 @@
         tree_node(K_T, V_T) _root, _beg;                                       \
         uint64_t _len;                                                         \
                                                                                \
-        CAT2(tree(K_T, V_T), _free_t) const _free;                             \
-        CAT2(tree(K_T, V_T), _lookup_t) const _lookup;                         \
-        CAT2(tree(K_T, V_T), _insert_t) const _insert;                         \
-        CAT2(tree(K_T, V_T), _delete_t) const _delete;                         \
-        CAT2(tree(K_T, V_T), _begin_t) const _begin;                           \
-        CAT2(tree(K_T, V_T), _last_t) const _last;                             \
-        CAT2(tree(K_T, V_T), _geq_t) const _geq;                               \
-        CAT2(tree(K_T, V_T), _geq_t) const _gtr;                               \
+        CAT2(tree(K_T, V_T), _free_t)  _free;                                  \
+        CAT2(tree(K_T, V_T), _lookup_t)  _lookup;                              \
+        CAT2(tree(K_T, V_T), _insert_t)  _insert;                              \
+        CAT2(tree(K_T, V_T), _delete_t)  _delete;                              \
+        CAT2(tree(K_T, V_T), _begin_t)  _begin;                                \
+        CAT2(tree(K_T, V_T), _last_t)  _last;                                  \
+        CAT2(tree(K_T, V_T), _geq_t)  _geq;                                    \
+        CAT2(tree(K_T, V_T), _geq_t)  _gtr;                                    \
     }                                                                          \
     *tree(K_T, V_T);                                                           \
                                                                                \
@@ -136,7 +144,8 @@
     static inline tree_node(K_T, V_T)                                          \
         CAT2(tree_node(K_T, V_T), _make)(K_T key, V_T val) {                   \
         tree_node(K_T, V_T) node =                                             \
-            (tree_node(K_T, V_T))malloc(sizeof(struct _tree_node(K_T, V_T)));  \
+            (tree_node(K_T, V_T))                                              \
+                TREE_MALLOC_FN(sizeof(struct _tree_node(K_T, V_T)));           \
                                                                                \
         node->_red = 1;                                                        \
         node->_children[0] = node->_children[1] = node->_parent = NULL;        \
@@ -151,7 +160,7 @@
         if (node) {                                                            \
             CAT2(tree_node(K_T, V_T), _free)(node->_children[0]);              \
             CAT2(tree_node(K_T, V_T), _free)(node->_children[1]);              \
-            free(node);                                                        \
+            TREE_FREE_FN(node);                                                \
         }                                                                      \
     }                                                                          \
                                                                                \
@@ -480,7 +489,7 @@
     static inline void CAT2(tree(K_T, V_T), _free)(tree(K_T, V_T) t) {         \
         if (t->_root)                                                          \
             CAT2(tree_node(K_T, V_T), _free)(t->_root);                        \
-        free(t);                                                               \
+        TREE_FREE_FN(t);                                                       \
     }                                                                          \
                                                                                \
     static inline tree_it(K_T, V_T)                                            \
@@ -517,7 +526,7 @@
                                                                                \
     static inline tree(K_T, V_T) CAT2(tree(K_T, V_T), _make)(void) {           \
         tree(K_T, V_T) t =                                                     \
-            (tree(K_T, V_T))malloc(sizeof(struct _tree(K_T, V_T)));            \
+            (tree(K_T, V_T))TREE_MALLOC_FN(sizeof(struct _tree(K_T, V_T)));    \
                                                                                \
         struct _tree(K_T, V_T)                                                 \
             init = {._root = NULL,                                             \
@@ -532,7 +541,7 @@
                     ._geq = CAT2(tree(K_T, V_T), _geq),                        \
                     ._gtr = CAT2(tree(K_T, V_T), _gtr)};                       \
                                                                                \
-        memcpy(t, &init, sizeof(struct _tree(K_T, V_T)));                      \
+        *t = init;                                                             \
                                                                                \
         return t;                                                              \
     }
@@ -585,14 +594,14 @@
         tree_node(K_T, V_T) _root, _beg;                                       \
         uint64_t _len;                                                         \
                                                                                \
-        CAT2(tree(K_T, V_T), _free_t) const _free;                             \
-        CAT2(tree(K_T, V_T), _lookup_t) const _lookup;                         \
-        CAT2(tree(K_T, V_T), _insert_t) const _insert;                         \
-        CAT2(tree(K_T, V_T), _delete_t) const _delete;                         \
-        CAT2(tree(K_T, V_T), _begin_t) const _begin;                           \
-        CAT2(tree(K_T, V_T), _last_t) const _last;                             \
-        CAT2(tree(K_T, V_T), _geq_t) const _geq;                               \
-        CAT2(tree(K_T, V_T), _geq_t) const _gtr;                               \
+        CAT2(tree(K_T, V_T), _free_t) _free;                                   \
+        CAT2(tree(K_T, V_T), _lookup_t) _lookup;                               \
+        CAT2(tree(K_T, V_T), _insert_t) _insert;                               \
+        CAT2(tree(K_T, V_T), _delete_t) _delete;                               \
+        CAT2(tree(K_T, V_T), _begin_t) _begin;                                 \
+        CAT2(tree(K_T, V_T), _last_t) _last;                                   \
+        CAT2(tree(K_T, V_T), _geq_t) _geq;                                     \
+        CAT2(tree(K_T, V_T), _geq_t) _gtr;                                     \
     }                                                                          \
     *tree(K_T, V_T);                                                           \
                                                                                \
@@ -600,7 +609,8 @@
     static inline tree_node(K_T, V_T)                                          \
         CAT2(tree_node(K_T, V_T), _make)(K_T key, V_T val) {                   \
         tree_node(K_T, V_T) node =                                             \
-            (tree_node(K_T, V_T))malloc(sizeof(struct _tree_node(K_T, V_T)));  \
+            (tree_node(K_T, V_T))                                              \
+                TREE_MALLOC_FN(sizeof(struct _tree_node(K_T, V_T)));           \
                                                                                \
         node->_red = 1;                                                        \
         node->_children[0] = node->_children[1] = node->_parent = NULL;        \
@@ -615,7 +625,7 @@
         if (node) {                                                            \
             CAT2(tree_node(K_T, V_T), _free)(node->_children[0]);              \
             CAT2(tree_node(K_T, V_T), _free)(node->_children[1]);              \
-            free(node);                                                        \
+            TREE_FREE_FN(node);                                                \
         }                                                                      \
     }                                                                          \
                                                                                \
@@ -981,7 +991,7 @@
                                                                                \
     static inline tree(K_T, V_T) CAT2(tree(K_T, V_T), _make)(void) {           \
         tree(K_T, V_T) t =                                                     \
-            (tree(K_T, V_T))malloc(sizeof(struct _tree(K_T, V_T)));            \
+            (tree(K_T, V_T))TREE_MALLOC_FN(sizeof(struct _tree(K_T, V_T)));    \
                                                                                \
         struct _tree(K_T, V_T)                                                 \
             init = {._root = NULL,                                             \
@@ -996,7 +1006,7 @@
                     ._geq = CAT2(tree(K_T, V_T), _geq),                        \
                     ._gtr = CAT2(tree(K_T, V_T), _gtr)};                       \
                                                                                \
-        memcpy(t, &init, sizeof(struct _tree(K_T, V_T)));                      \
+        *t = init;                                                             \
                                                                                \
         return t;                                                              \
     }
@@ -1049,14 +1059,14 @@
         tree_node(K_T, V_T) _root, _beg;                                       \
         uint64_t _len;                                                         \
                                                                                \
-        CAT2(tree(K_T, V_T), _free_t) const _free;                             \
-        CAT2(tree(K_T, V_T), _lookup_t) const _lookup;                         \
-        CAT2(tree(K_T, V_T), _insert_t) const _insert;                         \
-        CAT2(tree(K_T, V_T), _delete_t) const _delete;                         \
-        CAT2(tree(K_T, V_T), _begin_t) const _begin;                           \
-        CAT2(tree(K_T, V_T), _last_t) const _last;                             \
-        CAT2(tree(K_T, V_T), _geq_t) const _geq;                               \
-        CAT2(tree(K_T, V_T), _geq_t) const _gtr;                               \
+        CAT2(tree(K_T, V_T), _free_t)  _free;                                  \
+        CAT2(tree(K_T, V_T), _lookup_t)  _lookup;                              \
+        CAT2(tree(K_T, V_T), _insert_t)  _insert;                              \
+        CAT2(tree(K_T, V_T), _delete_t)  _delete;                              \
+        CAT2(tree(K_T, V_T), _begin_t)  _begin;                                \
+        CAT2(tree(K_T, V_T), _last_t)  _last;                                  \
+        CAT2(tree(K_T, V_T), _geq_t)  _geq;                                    \
+        CAT2(tree(K_T, V_T), _geq_t)  _gtr;                                    \
     }                                                                          \
     *tree(K_T, V_T);                                                           \
                                                                                \
@@ -1064,7 +1074,8 @@
     static inline tree_node(K_T, V_T)                                          \
         CAT2(tree_node(K_T, V_T), _make)(K_T key, V_T val) {                   \
         tree_node(K_T, V_T) node =                                             \
-            (tree_node(K_T, V_T))malloc(sizeof(struct _tree_node(K_T, V_T)));  \
+            (tree_node(K_T, V_T))                                              \
+                TREE_MALLOC_FN(sizeof(struct _tree_node(K_T, V_T)));           \
                                                                                \
         node->_red = 1;                                                        \
         node->_children[0] = node->_children[1] = node->_parent = NULL;        \
@@ -1445,7 +1456,7 @@
                                                                                \
     static inline tree(K_T, V_T) CAT2(tree(K_T, V_T), _make)(void) {           \
         tree(K_T, V_T) t =                                                     \
-            (tree(K_T, V_T))malloc(sizeof(struct _tree(K_T, V_T)));            \
+            (tree(K_T, V_T))TREE_MALLOC_FN(sizeof(struct _tree(K_T, V_T)));    \
                                                                                \
         struct _tree(K_T, V_T)                                                 \
             init = {._root = NULL,                                             \
@@ -1460,7 +1471,7 @@
                     ._geq = CAT2(tree(K_T, V_T), _geq),                        \
                     ._gtr = CAT2(tree(K_T, V_T), _gtr)};                       \
                                                                                \
-        memcpy(t, &init, sizeof(struct _tree(K_T, V_T)));                      \
+        *t = init;                                                             \
                                                                                \
         return t;                                                              \
     }
