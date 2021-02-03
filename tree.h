@@ -953,7 +953,7 @@
     static inline void CAT2(tree(K_T, V_T), _free)(tree(K_T, V_T) t) {         \
         if (t->_root)                                                          \
             CAT2(tree_node(K_T, V_T), _free)(t->_root);                        \
-        free(t);                                                               \
+        TREE_FREE_FN(t);                                                       \
     }                                                                          \
                                                                                \
     static inline tree_it(K_T, V_T)                                            \
@@ -1089,7 +1089,7 @@
         if (node) {                                                            \
             CAT2(tree_node(K_T, V_T), _free)(node->_children[0]);              \
             CAT2(tree_node(K_T, V_T), _free)(node->_children[1]);              \
-            free(node);                                                        \
+            TREE_FREE_FN(node);                                                \
         }                                                                      \
     }                                                                          \
                                                                                \
@@ -1418,7 +1418,7 @@
     static inline void CAT2(tree(K_T, V_T), _free)(tree(K_T, V_T) t) {         \
         if (t->_root)                                                          \
             CAT2(tree_node(K_T, V_T), _free)(t->_root);                        \
-        free(t);                                                               \
+        TREE_FREE_FN(t);                                                       \
     }                                                                          \
                                                                                \
     static inline tree_it(K_T, V_T)                                            \
